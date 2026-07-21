@@ -8,6 +8,8 @@ const { chromium } = require('playwright');
   const page = await browser.newPage();
 
   try {
+    console.log("Opening page...");
+
     await page.goto(
       'http://citywisedetails.epizy.com/mailbday/bday.php',
       {
@@ -16,10 +18,22 @@ const { chromium } = require('playwright');
       }
     );
 
-    console.log('Page title:', await page.title());
-    console.log('Triggered successfully');
+    console.log("Final URL:", page.url());
+    console.log("Page title:", await page.title());
+
+    const content = await page.textContent('body');
+
+    console.log("Page response:");
+    console.log(content);
+
+    if (content.includes("This site requires Javascript")) {
+      throw new Error("InfinityFree bot protection page detected");
+    }
+
+    console.log("Birthday script triggered successfully");
+
   } catch (err) {
-    console.error(err);
+    console.error("Error:", err.message);
     process.exit(1);
   } finally {
     await browser.close();
